@@ -1,19 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 
 function HomeWork95() {
-  const id = String(Math.round(Math.random() * 16));
-  const url = `https://reqres.in/api/users/${id}`;
+  //const id = String(Math.round(Math.random() * 12));
+  const url =
+    `https://reqres.in/api/users/` + String(Math.round(Math.random() * 12));
   const [users, setUsers] = useState([]);
   const [isDetailed, setIsDetailed] = useState(false);
   const buttonText = useRef("Show");
 
-  function getUser() {
-    async function fetchUser() {
-      const response = await fetch(url);
-      const result = await response.json(users);
-      setUsers([...users, result.data]);
-    }
-    fetchUser();
+  async function fetchUser() {
+    const response = await fetch(url);
+    const result = await response.json();
+    setUsers([...users, result.data]);
   }
 
   function showUser() {
@@ -46,30 +44,27 @@ function HomeWork95() {
         );
       });
     } else {
-      const renderedList = [];
-      for (const userInfo of users) {
-        const renderedUser = (
-          <div>
-            <h4>
+      return users.map((userInfo) => {
+        return (
+          <div key={userInfo.id} className="m-3">
+            {" "}
+            <h4 key={userInfo.id} className="text-muted">
+              {" "}
               {userInfo.first_name} {userInfo.last_name}
             </h4>
-            <hr />
           </div>
         );
-        renderedList.push(renderedUser);
-      }
-      return renderedList;
+      });
     }
   }
+  useEffect(() => {
+    // console.log(isDetailed);
+  }, [isDetailed]);
 
   function removeUser() {
     users.pop();
     setUsers([...users]);
   }
-
-  useEffect(() => {
-    console.log(isDetailed);
-  }, [isDetailed]);
 
   function showDetails() {
     if (isDetailed) {
@@ -86,7 +81,7 @@ function HomeWork95() {
       <h3 className="text-success fw-bold m-5">Hello user</h3>
       <hr />
       {showUser()}
-      <button onClick={getUser} className="button-41">
+      <button onClick={fetchUser} className="button-41">
         Show user
       </button>
       <button className="button-41" onClick={removeUser}>
